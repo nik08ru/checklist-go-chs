@@ -115,7 +115,7 @@ function collectFormData() {
 
 // ==================== 7. ОТПРАВКА ДАННЫХ В GOOGLE APPS SCRIPT ====================
 // ⚠️ ВАЖНО: замените URL на свой после развёртывания веб-приложения
-const GOOGLE_SCRIPT_URL = 'ВАШ_URL_GOOGLE_APPS_SCRIPT';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycQXQ3GM9Vj0tDjGbp_IZQpfH9wn4QqrvjNy6zNfzjSd6RTutkg3A8eRXTyj2AyroI/exec';
 
 async function sendData(payload) {
     try {
