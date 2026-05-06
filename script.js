@@ -120,7 +120,7 @@ function collectFormData() {
 
 // ----------------------------- 7. ОТПРАВКА В GOOGLE APPS SCRIPT -----------------------------
 // ⚠️ ВАЖНО: замените URL на адрес вашего веб-приложения (из Google Apps Script)
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycQXQ3GM9Vj0tDjGbp_IZQpfH9wn4QqrvjNy6zNfzjSd6RTutkg3A8eRXTyj2AyroI/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWLjexeriEqytDg0xyDex2RrKIBkXIdOXUZ6hRtdL9ONa0VrrTm-bQtrnsny77zO66tw/exec';
 
 async function sendData(payload) {
     try {
