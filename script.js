@@ -1,6 +1,5 @@
-// ==================== 1. АДРЕСА ЗДАНИЙ + ОПЦИЯ "ВСЕ ЗДАНИЯ" ====================
+// ==================== 1. АДРЕСА ЗДАНИЙ (11 адресов из вашего скриншота) ====================
 const buildingAddresses = [
-    "Все здания (юридическое лицо)",   // добавленная опция для проверки всего учреждения
     "город Москва, район Краснопахорский, поселок Шишкин Лес, дом 33",
     "город Москва, район Краснопахорский, поселок Щапово, дом 21, строение 2",
     "город Москва, район Краснопахорский, село Красная Пахра, дом 24А",
@@ -14,7 +13,7 @@ const buildingAddresses = [
     "город Москва, район Краснопахорский, поселок Щапово, дом 20, строение 1"
 ];
 
-// ==================== 2. ПУНКТЫ ПРОВЕРКИ (позитивные формулировки) ====================
+// ==================== 2. ПУНКТЫ ПРОВЕРКИ (перефразированы в позитивные формулировки) ====================
 const checklistItems = [
     { name: "Наличие приказа «Об организации и ведении гражданской обороны в образовательных организациях»", normative: "постановление Правительства РФ от 26.11.2007 № 804" },
     { name: "Наличие приказа о назначении уполномоченного на решение задач в области ГО в ОО", normative: "Постановление Правительства РФ от 10.07.1999 № 782" },
@@ -89,11 +88,7 @@ function isFormValid() {
 
 // ==================== 6. СБОР ДАННЫХ ДЛЯ ОТПРАВКИ ====================
 function collectFormData() {
-    let address = document.getElementById('buildingAddress').value;
-    // Если выбран вариант "Все здания", можно немного преобразовать для наглядности
-    if (address === "Все здания (юридическое лицо)") {
-        address = "Все здания (ГБОУ Школа №2075)";
-    }
+    const address = document.getElementById('buildingAddress').value;
     const inspector = document.getElementById('inspectorName').value.trim();
     const generalComment = document.getElementById('generalComment').value.trim();
     const dateTime = new Date().toLocaleString('ru-RU', { 
@@ -125,7 +120,7 @@ async function sendData(payload) {
     try {
         await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
+            mode: 'no-cors',   // упрощённый режим для Google Apps Script
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
@@ -153,7 +148,7 @@ document.getElementById('checklistForm')?.addEventListener('submit', async (e) =
     // Проверка выбора адреса
     const addressSelect = document.getElementById('buildingAddress');
     if (!addressSelect.value) {
-        showNotification('Выберите адрес здания или "Все здания"!', 'error');
+        showNotification('Выберите адрес здания!', 'error');
         return;
     }
     
