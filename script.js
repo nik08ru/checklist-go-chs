@@ -1,10 +1,9 @@
 // ============================================================================
 // ЧЕК-ЛИСТ ГО И ЧС — Школа №2075 имени Е.А. Родионова
-// Полный скрипт для веб-формы (GitHub Pages)
+// Отправка в Google Apps Script → создание Google Docs
 // ============================================================================
 
 // ----------------------------- 1. АДРЕСА ЗДАНИЙ -----------------------------
-// Первый пункт — "Все здания (юридическое лицо)" — позволяет отправить один чек-лист для всей школы
 const buildingAddresses = [
     "Все здания (юридическое лицо)",
     "город Москва, район Краснопахорский, поселок Шишкин Лес, дом 33",
@@ -21,7 +20,6 @@ const buildingAddresses = [
 ];
 
 // ----------------------------- 2. ПУНКТЫ ПРОВЕРКИ -----------------------------
-// Каждый пункт содержит название (для отображения) и нормативное обоснование
 const checklistItems = [
     { name: "Наличие приказа «Об организации и ведении гражданской обороны в образовательных организациях»", normative: "постановление Правительства РФ от 26.11.2007 № 804" },
     { name: "Наличие приказа о назначении уполномоченного на решение задач в области ГО в ОО", normative: "Постановление Правительства РФ от 10.07.1999 № 782" },
@@ -38,7 +36,7 @@ const checklistItems = [
     { name: "Наличие Актов подключения и рабочей документации по сопряжению объектовой системы оповещения о ЧС с региональной системой оповещения населения г. Москвы", normative: "постановление Правительства Москвы от 01.12.2015 № 795-ПП" }
 ];
 
-// ----------------------------- 3. ЗАПОЛНЕНИЕ ВЫПАДАЮЩЕГО СПИСКА -----------------------------
+// ----------------------------- 3. ЗАПОЛНЕНИЕ ВЫПАДАЮЩЕГО СПИСКА АДРЕСОВ -----------------------------
 function populateAddresses() {
     const select = document.getElementById('buildingAddress');
     if (!select) return;
@@ -58,25 +56,20 @@ function buildTable() {
     tbody.innerHTML = '';
     checklistItems.forEach((item, idx) => {
         const row = tbody.insertRow();
-        // Пункт проверки
         const cellName = row.insertCell(0);
         cellName.textContent = item.name;
-        // Нормативное обоснование
         const cellNorm = row.insertCell(1);
         cellNorm.textContent = item.normative;
         cellNorm.style.fontSize = '0.8rem';
         cellNorm.style.color = '#4A5568';
-        // Выполнение (Да/Нет)
         const cellStatus = row.insertCell(2);
         const select = document.createElement('select');
-        select.setAttribute('data-idx', idx);
         select.required = true;
         select.innerHTML = `<option value="" disabled selected>– Выберите –</option>
                             <option value="Да">✅ Да</option>
                             <option value="Нет">❌ Нет</option>`;
         select.className = 'status-select';
         cellStatus.appendChild(select);
-        // Срок устранения
         const cellDeadline = row.insertCell(3);
         const inputDeadline = document.createElement('input');
         inputDeadline.type = 'text';
@@ -86,7 +79,7 @@ function buildTable() {
     });
 }
 
-// ----------------------------- 5. ПРОВЕРКА ЗАПОЛНЕНИЯ ВСЕХ ОТВЕТОВ -----------------------------
+// ----------------------------- 5. ПРОВЕРКА ЗАПОЛНЕНИЯ -----------------------------
 function isFormValid() {
     const selects = document.querySelectorAll('.status-select');
     for (let sel of selects) {
@@ -95,16 +88,15 @@ function isFormValid() {
     return true;
 }
 
-// ----------------------------- 6. СБОР ДАННЫХ ДЛЯ ОТПРАВКИ -----------------------------
+// ----------------------------- 6. СБОР ДАННЫХ -----------------------------
 function collectFormData() {
     const address = document.getElementById('buildingAddress').value;
     const inspector = document.getElementById('inspectorName').value.trim();
     const generalComment = document.getElementById('generalComment').value.trim();
-    const dateTime = new Date().toLocaleString('ru-RU', { 
-        day: '2-digit', month: '2-digit', year: 'numeric', 
-        hour: '2-digit', minute: '2-digit' 
+    const dateTime = new Date().toLocaleString('ru-RU', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
     });
-    
     const rows = [];
     const selects = document.querySelectorAll('.status-select');
     const deadlines = document.querySelectorAll('.deadline-input');
@@ -118,53 +110,56 @@ function collectFormData() {
     return { dateTime, address, inspector, generalComment, rows };
 }
 
-// ----------------------------- 7. ОТПРАВКА В GOOGLE APPS SCRIPT -----------------------------
-// ⚠️ ВАЖНО: замените URL на адрес вашего веб-приложения (из Google Apps Script)
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWLjexeriEqytDg0xyDex2RrKIBkXIdOXUZ6hRtdL9ONa0VrrTm-bQtrnsny77zO66tw/exec';
+// ----------------------------- 7. ОТПРАВКА В APPS SCRIPT (без no-cors) -----------------------------
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWLjexeriEqytDg0xyDex2RrKIBkXIdOXUZ6hRtdL9ONa0VrrTm-bQtrnsny77zO66tw/exec'; // ЗАМЕНИТЕ НА ВАШ URL
 
 async function sendData(payload) {
     try {
-        await fetch(GOOGLE_SCRIPT_URL, {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',               // обходим CORS, но не можем прочитать ответ
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        // При mode: 'no-cors' мы не получаем ответ, но если ошибки сети нет – считаем успехом
-        return true;
+        const result = await response.json();
+        if (result.result === 'success') {
+            return { success: true, url: result.url };
+        } else {
+            console.error(result.error);
+            return { success: false, error: result.error };
+        }
     } catch (err) {
-        console.error('Ошибка отправки:', err);
-        return false;
+        console.error(err);
+        return { success: false, error: err.message };
     }
 }
 
 // ----------------------------- 8. УВЕДОМЛЕНИЯ -----------------------------
-function showNotification(msg, type) {
+function showNotification(msg, type, url = null) {
     const n = document.getElementById('notification');
     if (!n) return;
-    n.textContent = msg;
+    n.innerHTML = msg;
+    if (url) {
+        n.innerHTML += ` <a href="${url}" target="_blank" style="color: #0B2F5E; font-weight: bold;">Открыть документ</a>`;
+    }
     n.className = `toast-notification ${type}`;
     n.classList.remove('hidden');
-    setTimeout(() => n.classList.add('hidden'), 5000);
+    setTimeout(() => n.classList.add('hidden'), 8000);
 }
 
-// ----------------------------- 9. ОБРАБОТЧИК ОТПРАВКИ ФОРМЫ -----------------------------
+// ----------------------------- 9. ОБРАБОТЧИК ФОРМЫ -----------------------------
 document.getElementById('checklistForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const addressSelect = document.getElementById('buildingAddress');
-    if (!addressSelect.value) {
+    if (!document.getElementById('buildingAddress').value) {
         showNotification('Выберите адрес здания или "Все здания"!', 'error');
         return;
     }
-    
     if (!isFormValid()) {
-        showNotification('Пожалуйста, выберите "Да" или "Нет" для каждого пункта проверки!', 'error');
+        showNotification('Выберите "Да" или "Нет" для каждого пункта!', 'error');
         return;
     }
     
     const data = collectFormData();
-    
     const btn = document.getElementById('submitBtn');
     const front = btn?.querySelector('.btn-front');
     const loader = btn?.querySelector('.btn-loader');
@@ -174,19 +169,16 @@ document.getElementById('checklistForm')?.addEventListener('submit', async (e) =
     }
     if (btn) btn.disabled = true;
     
-    const ok = await sendData(data);
+    const result = await sendData(data);
     
-    if (ok) {
-        showNotification('✅ Чек-лист успешно отправлен! Данные добавлены в Google Таблицу.', 'success');
-        // Очищаем необязательные поля и сбрасываем таблицу
+    if (result.success) {
+        showNotification('✅ Документ создан!', 'success', result.url);
         document.getElementById('inspectorName').value = '';
         document.getElementById('generalComment').value = '';
-        const selects = document.querySelectorAll('.status-select');
-        const deadlines = document.querySelectorAll('.deadline-input');
-        selects.forEach(sel => sel.value = '');
-        deadlines.forEach(inp => inp.value = '');
+        document.querySelectorAll('.status-select').forEach(sel => sel.value = '');
+        document.querySelectorAll('.deadline-input').forEach(inp => inp.value = '');
     } else {
-        showNotification('❌ Ошибка отправки. Проверьте интернет и URL скрипта.', 'error');
+        showNotification(`❌ Ошибка: ${result.error}`, 'error');
     }
     
     if (front && loader) {
@@ -196,7 +188,7 @@ document.getElementById('checklistForm')?.addEventListener('submit', async (e) =
     if (btn) btn.disabled = false;
 });
 
-// ----------------------------- 10. ЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ -----------------------------
+// ----------------------------- 10. ЗАПУСК -----------------------------
 document.addEventListener('DOMContentLoaded', () => {
     populateAddresses();
     buildTable();
