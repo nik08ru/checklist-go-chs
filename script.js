@@ -1,5 +1,6 @@
-// ---------- 1. АДРЕСА ЗДАНИЙ (из вашего скриншота, 11 штук) ----------
+// ==================== 1. АДРЕСА ЗДАНИЙ + ОПЦИЯ "ВСЕ ЗДАНИЯ" ====================
 const buildingAddresses = [
+    "Все здания (юридическое лицо)",   // добавленная опция для проверки всего учреждения
     "город Москва, район Краснопахорский, поселок Шишкин Лес, дом 33",
     "город Москва, район Краснопахорский, поселок Щапово, дом 21, строение 2",
     "город Москва, район Краснопахорский, село Красная Пахра, дом 24А",
@@ -13,9 +14,8 @@ const buildingAddresses = [
     "город Москва, район Краснопахорский, поселок Щапово, дом 20, строение 1"
 ];
 
-// ---------- 2. ПУНКТЫ ПРОВЕРКИ И НОРМАТИВЫ (из вашего Excel) ----------
+// ==================== 2. ПУНКТЫ ПРОВЕРКИ (позитивные формулировки) ====================
 const checklistItems = [
-  const checklistItems = [
     { name: "Наличие приказа «Об организации и ведении гражданской обороны в образовательных организациях»", normative: "постановление Правительства РФ от 26.11.2007 № 804" },
     { name: "Наличие приказа о назначении уполномоченного на решение задач в области ГО в ОО", normative: "Постановление Правительства РФ от 10.07.1999 № 782" },
     { name: "Наличие Положения об объектовом звене Московской городской территориальной подсистемы РСЧС ОО", normative: "п. 5 Положения о РСЧС, утв. постановлением Правительства РФ от 30.12.2003 № 794" },
@@ -31,9 +31,22 @@ const checklistItems = [
     { name: "Наличие Актов подключения и рабочей документации по сопряжению объектовой системы оповещения о ЧС с региональной системой оповещения населения г. Москвы", normative: "постановление Правительства Москвы от 01.12.2015 № 795-ПП" }
 ];
 
-// ---------- 3. ГЕНЕРАЦИЯ ТАБЛИЦЫ ----------
+// ==================== 3. ЗАПОЛНЕНИЕ ВЫПАДАЮЩЕГО СПИСКА АДРЕСОВ ====================
+function populateAddresses() {
+    const select = document.getElementById('buildingAddress');
+    if (!select) return;
+    buildingAddresses.forEach(addr => {
+        const option = document.createElement('option');
+        option.value = addr;
+        option.textContent = addr;
+        select.appendChild(option);
+    });
+}
+
+// ==================== 4. ПОСТРОЕНИЕ ТАБЛИЦЫ С ПУНКТАМИ ПРОВЕРКИ ====================
 function buildTable() {
     const tbody = document.getElementById('tableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
     checklistItems.forEach((item, idx) => {
         const row = tbody.insertRow();
@@ -65,16 +78,7 @@ function buildTable() {
     });
 }
 
-// ---------- 4. ЗАПОЛНЕНИЕ СПИСКА АДРЕСОВ ----------
-function populateAddresses() {
-    const select = document.getElementById('buildingAddress');
-    buildingAddresses.forEach(addr => {
-        const option = new Option(addr, addr);
-        select.appendChild(option);
-    });
-}
-
-// ---------- 5. ВАЛИДАЦИЯ: все ли "Выполнение" выбраны? ----------
+// ==================== 5. ПРОВЕРКА, ЧТО ВСЕ ОТВЕТЫ ВЫБРАНЫ ====================
 function isFormValid() {
     const selects = document.querySelectorAll('.status-select');
     for (let sel of selects) {
@@ -83,12 +87,22 @@ function isFormValid() {
     return true;
 }
 
-// ---------- 6. СБОР ДАННЫХ ДЛЯ ОТПРАВКИ ----------
+// ==================== 6. СБОР ДАННЫХ ДЛЯ ОТПРАВКИ ====================
 function collectFormData() {
-    const address = document.getElementById('buildingAddress').value;
+    let address = document.getElementById('buildingAddress').value;
+    // Если выбран вариант "Все здания", можно немного преобразовать для наглядности
+    if (address === "Все здания (юридическое лицо)") {
+        address = "Все здания (ГБОУ Школа №2075)";
+    }
     const inspector = document.getElementById('inspectorName').value.trim();
     const generalComment = document.getElementById('generalComment').value.trim();
-    const dateTime = new Date().toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const dateTime = new Date().toLocaleString('ru-RU', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
     
     const rows = [];
     const selects = document.querySelectorAll('.status-select');
@@ -103,8 +117,9 @@ function collectFormData() {
     return { dateTime, address, inspector, generalComment, rows };
 }
 
-// ---------- 7. ОТПРАВКА В GOOGLE APPS SCRIPT ----------
-const GOOGLE_SCRIPT_URL = 'ВАШ_URL_GOOGLE_APPS_SCRIPT';  // ЗАМЕНИТЕ ПОСЛЕ РАЗВЁРТЫВАНИЯ
+// ==================== 7. ОТПРАВКА ДАННЫХ В GOOGLE APPS SCRIPT ====================
+// ⚠️ ВАЖНО: замените URL на свой после развёртывания веб-приложения
+const GOOGLE_SCRIPT_URL = 'ВАШ_URL_GOOGLE_APPS_SCRIPT';
 
 async function sendData(payload) {
     try {
@@ -116,27 +131,33 @@ async function sendData(payload) {
         });
         return true;
     } catch (err) {
-        console.error(err);
+        console.error('Ошибка отправки:', err);
         return false;
     }
 }
 
+// ==================== 8. ПОКАЗ УВЕДОМЛЕНИЙ ====================
 function showNotification(msg, type) {
     const n = document.getElementById('notification');
+    if (!n) return;
     n.textContent = msg;
     n.className = `toast-notification ${type}`;
     n.classList.remove('hidden');
     setTimeout(() => n.classList.add('hidden'), 5000);
 }
 
-// ---------- 8. ОБРАБОТЧИК ОТПРАВКИ ----------
-document.getElementById('checklistForm').addEventListener('submit', async (e) => {
+// ==================== 9. ОБРАБОТЧИК ОТПРАВКИ ФОРМЫ ====================
+document.getElementById('checklistForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    if (!document.getElementById('buildingAddress').value) {
-        showNotification('Выберите адрес здания!', 'error');
+    // Проверка выбора адреса
+    const addressSelect = document.getElementById('buildingAddress');
+    if (!addressSelect.value) {
+        showNotification('Выберите адрес здания или "Все здания"!', 'error');
         return;
     }
+    
+    // Проверка, что по каждому пункту выбран ответ
     if (!isFormValid()) {
         showNotification('Пожалуйста, выберите "Да" или "Нет" для каждого пункта проверки!', 'error');
         return;
@@ -145,19 +166,21 @@ document.getElementById('checklistForm').addEventListener('submit', async (e) =>
     const data = collectFormData();
     
     const btn = document.getElementById('submitBtn');
-    const front = btn.querySelector('.btn-front');
-    const loader = btn.querySelector('.btn-loader');
-    front.classList.add('hidden');
-    loader.classList.remove('hidden');
-    btn.disabled = true;
+    const front = btn?.querySelector('.btn-front');
+    const loader = btn?.querySelector('.btn-loader');
+    if (front && loader) {
+        front.classList.add('hidden');
+        loader.classList.remove('hidden');
+    }
+    if (btn) btn.disabled = true;
     
     const ok = await sendData(data);
+    
     if (ok) {
         showNotification('✅ Чек-лист успешно отправлен! Данные добавлены в Google Таблицу.', 'success');
-        // Очистка формы (не сбрасываем адрес и таблицу? Сбросим только необязательные поля и таблицу)
+        // Очищаем необязательные поля и сбрасываем таблицу
         document.getElementById('inspectorName').value = '';
         document.getElementById('generalComment').value = '';
-        // Сбросить все селекты и поля сроков
         const selects = document.querySelectorAll('.status-select');
         const deadlines = document.querySelectorAll('.deadline-input');
         selects.forEach(sel => sel.value = '');
@@ -166,12 +189,14 @@ document.getElementById('checklistForm').addEventListener('submit', async (e) =>
         showNotification('❌ Ошибка отправки. Проверьте интернет и URL скрипта.', 'error');
     }
     
-    front.classList.remove('hidden');
-    loader.classList.add('hidden');
-    btn.disabled = false;
+    if (front && loader) {
+        front.classList.remove('hidden');
+        loader.classList.add('hidden');
+    }
+    if (btn) btn.disabled = false;
 });
 
-// Инициализация
+// ==================== 10. ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ====================
 document.addEventListener('DOMContentLoaded', () => {
     populateAddresses();
     buildTable();
