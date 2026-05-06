@@ -1,34 +1,70 @@
-// --- Адреса зданий (строго из вашего промта) ---
+// ---------- 1. АДРЕСА ЗДАНИЙ (из вашего скриншота, 11 штук) ----------
 const buildingAddresses = [
-    "г. Москва, р-н Краснопахорский, с. Красная Пахра, д. 23",
-    "г. Москва, р-н Краснопахорский, п. Шишкин Лес, д. 28",
-    "г. Москва, р-н Краснопахорский, п. Курилово, ул. Школьная, д. 3",
-    "г. Москва, р-н Краснопахорский, п. Курилово, ул. Центральная, д. 8",
-    "г. Москва, р-н Краснопахорский, п. Щапово, д. 21, стр. 1",
-    "г. Москва, р-н Краснопахорский, с. Красная Пахра, д. 24А",
-    "г. Москва, р-н Краснопахорский, п. Шишкин Лес, д. 33",
-    "г. Москва, р-н Краснопахорский, с. Былово, д. 1А",
-    "г. Москва, р-н Краснопахорский, п. Щапово, д. 20, стр. 1"
+    "город Москва, район Краснопахорский, поселок Шишкин Лес, дом 33",
+    "город Москва, район Краснопахорский, поселок Щапово, дом 21, строение 2",
+    "город Москва, район Краснопахорский, село Красная Пахра, дом 24А",
+    "город Москва, район Краснопахорский, село Красная Пахра, дом 23, строение 1",
+    "город Москва, район Краснопахорский, село Былово, дом 1А",
+    "город Москва, район Краснопахорский, село Красная Пахра, дом 23",
+    "город Москва, район Краснопахорский, поселок Шишкин Лес, дом 28",
+    "город Москва, район Краснопахорский, поселок Курилово, улица Школьная, дом 3",
+    "город Москва, район Краснопахорский, поселок Курилово, улица Центральная, дом 8",
+    "город Москва, район Краснопахорский, поселок Щапово, дом 21",
+    "город Москва, район Краснопахорский, поселок Щапово, дом 20, строение 1"
 ];
 
-// --- Пункты проверки и нормативные обоснования (из вашего Excel-файла, столбцы B и C) ---
+// ---------- 2. ПУНКТЫ ПРОВЕРКИ И НОРМАТИВЫ (из вашего Excel) ----------
 const checklistItems = [
-    { name: "Отсутствие приказа «Об организации и ведении гражданской обороны в образовательных организациях»", normative: "постановление Правительства Российской Федерации от 26.11.2007 № 804 «Об утверждении Положения о гражданской обороне в Российской Федерации»" },
-    { name: "Отсутствие приказа о назначении уполномоченного на решение задач в области ГО в ОО", normative: "Постановление Правительства Российской Федерации от 10.07.1999 № 782 «О создании (назначении) в организациях структурных подразделений (работников), специально уполномоченных на решение задач в области гражданской обороны»" },
-    { name: "Отсутствие Положения об объектовом звене Московской городской территориальной подсистемы Единой государственной системы предупреждения и ликвидации чрезвычайных ситуаций (РСЧС) ОО", normative: "п. 5 Положения о единой государственной системе предупреждения и ликвидации чрезвычайных ситуаций, утвержденного постановлением Правительства Российской Федерации от 30.12.2003 № 794" },
-    { name: "Отсутствие приказа об организации подготовки работников ОО по гражданской обороне и защите от чрезвычайных ситуаций (ГО и ЧС) природного и техногенного характера", normative: "постановление Правительства Российской Федерации от 02.11.2000 № 841; постановление Правительства Российской Федерации от 18.09.2020 № 1485" },
-    { name: "Отсутствие плана действий по предупреждению и ликвидации ЧС природного и техногенного характера", normative: "постановление Правительства Москвы от 24.02.2009 № 124-ПП «Об организации планирования действий по предупреждению и ликвидации чрезвычайных ситуаций»" },
-    { name: "Отсутствие плана основных мероприятий по ГО и ЧС на текущий год", normative: "п. 4 Положения об организации и ведении ГО в муниципальных образованиях и организациях, утвержденного приказом МЧС России от 14.11.2008 № 687" },
-    { name: "Отсутствие плана проведения тренировок по ГО и ЧС, отчетных документов о проведенных тренировках", normative: "Методические рекомендации по подготовке и проведению учений и тренировок по гражданской обороне (МЧС России 27.08.2021)" },
-    { name: "Отсутствие плана развития и совершенствования учебно-материальной базы по курсу «Основы безопасности и защиты Родины»", normative: "письмо МЧС России от 27.02.2020 № 11-7-604 «О примерном порядке определения состава учебно-материальной базы для подготовки населения в области гражданской обороны и защиты от чрезвычайных ситуаций»" },
-    { name: "Не проведены вводный инструктаж по ГО и периодические инструктажи по ЧС, не ведутся журналы учета проведения инструктажей", normative: "постановление Правительства Российской Федерации от 02.11.2000 № 841; постановление Правительства Российской Федерации от 18.09.2020 № 1485" },
-    { name: "Отсутствие приказа об итогах подготовки по ГО и защиты от ЧС в 20__ и задачах на 20__ год", normative: "п. «в» статьи 14 Федерального закона № 68-ФЗ; п.п. «а», «в» п. 2, п.п. «а», «в» п. 4, п. 7-12 Положения о подготовке граждан... (постановление № 1485)" },
-    { name: "Отсутствие приказа «О Комиссии ОО по предупреждению и ликвидации чрезвычайных ситуаций и обеспечению пожарной безопасности», утверждающего Положение о КЧС и ПБ", normative: "п. 6, 7 Положения о единой государственной системе предупреждения и ликвидации чрезвычайных ситуаций, утвержденного постановлением Правительства Российской Федерации от 30.12.2003 № 794" },
-    { name: "Отсутствие документации защитных сооружений гражданской обороны (ЗС ГО) (для ОО, имеющих на балансе ЗС ГО)", normative: "Приказ МЧС России от 15.12.2002 № 583 «Об утверждении и введении в действие Правил эксплуатации защитных сооружений гражданской обороны»" },
-    { name: "Отсутствие Актов подключения и рабочей документации по сопряжению объектовой системы оповещения о чрезвычайных ситуациях с региональной системой оповещения населения города Москвы по основному и резервному каналам связи", normative: "постановление Правительства Москвы от 01.12.2015 № 795-ПП «Об организации оповещения города Москвы о чрезвычайных ситуациях»" }
+    { name: "Отсутствие приказа «Об организации и ведении гражданской обороны в образовательных организациях»", normative: "постановление Правительства РФ от 26.11.2007 № 804" },
+    { name: "Отсутствие приказа о назначении уполномоченного на решение задач в области ГО в ОО", normative: "Постановление Правительства РФ от 10.07.1999 № 782" },
+    { name: "Отсутствие Положения об объектовом звене Московской городской территориальной подсистемы РСЧС ОО", normative: "п. 5 Положения о РСЧС, утв. постановлением Правительства РФ от 30.12.2003 № 794" },
+    { name: "Отсутствие приказа об организации подготовки работников ОО по гражданской обороне и защите от ЧС", normative: "постановления № 841 от 02.11.2000; № 1485 от 18.09.2020" },
+    { name: "Отсутствие плана действий по предупреждению и ликвидации ЧС природного и техногенного характера", normative: "постановление Правительства Москвы от 24.02.2009 № 124-ПП" },
+    { name: "Отсутствие плана основных мероприятий по ГО и ЧС на текущий год", normative: "п. 4 Положения, утв. приказом МЧС России от 14.11.2008 № 687" },
+    { name: "Отсутствие плана проведения тренировок по ГО и ЧС, отчетных документов о проведенных тренировках", normative: "Методические рекомендации МЧС России от 27.08.2021" },
+    { name: "Отсутствие плана развития и совершенствования учебно-материальной базы по курсу «Основы безопасности и защиты Родины»", normative: "письмо МЧС России от 27.02.2020 № 11-7-604" },
+    { name: "Не проведены вводный инструктаж по ГО и периодические инструктажи по ЧС, не ведутся журналы учета проведения инструктажей", normative: "постановления № 841 и № 1485" },
+    { name: "Отсутствие приказа об итогах подготовки по ГО и защиты от ЧС в 20__ и задачах на 20__ год", normative: "ст.14 ФЗ №68-ФЗ; постановление № 1485" },
+    { name: "Отсутствие приказа «О Комиссии ОО по предупреждению и ликвидации чрезвычайных ситуаций и обеспечению пожарной безопасности», утверждающего Положение о КЧС и ПБ", normative: "п. 6,7 Положения о РСЧС, утв. постановлением № 794" },
+    { name: "Отсутствие документации защитных сооружений гражданской обороны (ЗС ГО) (для ОО, имеющих на балансе ЗС ГО)", normative: "Приказ МЧС России от 15.12.2002 № 583" },
+    { name: "Отсутствие Актов подключения и рабочей документации по сопряжению объектовой системы оповещения о ЧС с региональной системой оповещения населения г. Москвы", normative: "постановление Правительства Москвы от 01.12.2015 № 795-ПП" }
 ];
 
-// Заполнение адресов
+// ---------- 3. ГЕНЕРАЦИЯ ТАБЛИЦЫ ----------
+function buildTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    checklistItems.forEach((item, idx) => {
+        const row = tbody.insertRow();
+        // Пункт проверки
+        const cellName = row.insertCell(0);
+        cellName.textContent = item.name;
+        // Нормативное обоснование
+        const cellNorm = row.insertCell(1);
+        cellNorm.textContent = item.normative;
+        cellNorm.style.fontSize = '0.8rem';
+        cellNorm.style.color = '#4A5568';
+        // Выполнение (Да/Нет)
+        const cellStatus = row.insertCell(2);
+        const select = document.createElement('select');
+        select.setAttribute('data-idx', idx);
+        select.setAttribute('required', 'required');
+        select.innerHTML = `<option value="" disabled selected>– Выберите –</option>
+                            <option value="Да">✅ Да</option>
+                            <option value="Нет">❌ Нет</option>`;
+        select.className = 'status-select';
+        cellStatus.appendChild(select);
+        // Срок устранения
+        const cellDeadline = row.insertCell(3);
+        const inputDeadline = document.createElement('input');
+        inputDeadline.type = 'text';
+        inputDeadline.placeholder = 'укажите срок (при "Нет")';
+        inputDeadline.className = 'deadline-input';
+        cellDeadline.appendChild(inputDeadline);
+    });
+}
+
+// ---------- 4. ЗАПОЛНЕНИЕ СПИСКА АДРЕСОВ ----------
 function populateAddresses() {
     const select = document.getElementById('buildingAddress');
     buildingAddresses.forEach(addr => {
@@ -37,25 +73,39 @@ function populateAddresses() {
     });
 }
 
-// Заполнение пунктов проверки и обработчик для подстановки норматива
-function populateCheckpoints() {
-    const select = document.getElementById('checkpoint');
-    checklistItems.forEach(item => {
-        const option = new Option(item.name, item.name);
-        option.dataset.normative = item.normative;
-        select.appendChild(option);
-    });
-    select.addEventListener('change', (e) => {
-        const selected = e.target.selectedOptions[0];
-        const normative = selected ? selected.dataset.normative : '';
-        document.getElementById('normativeBase').value = normative;
-    });
+// ---------- 5. ВАЛИДАЦИЯ: все ли "Выполнение" выбраны? ----------
+function isFormValid() {
+    const selects = document.querySelectorAll('.status-select');
+    for (let sel of selects) {
+        if (!sel.value) return false;
+    }
+    return true;
 }
 
-// ------ ЗАМЕНИТЕ ЭТУ ССЫЛКУ ПОСЛЕ РАЗВЁРТЫВАНИЯ APPS SCRIPT ------
-const GOOGLE_SCRIPT_URL = 'ВАШ_URL_GOOGLE_APPS_SCRIPT';
+// ---------- 6. СБОР ДАННЫХ ДЛЯ ОТПРАВКИ ----------
+function collectFormData() {
+    const address = document.getElementById('buildingAddress').value;
+    const inspector = document.getElementById('inspectorName').value.trim();
+    const generalComment = document.getElementById('generalComment').value.trim();
+    const dateTime = new Date().toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    
+    const rows = [];
+    const selects = document.querySelectorAll('.status-select');
+    const deadlines = document.querySelectorAll('.deadline-input');
+    for (let i = 0; i < checklistItems.length; i++) {
+        rows.push({
+            question: checklistItems[i].name,
+            status: selects[i].value,
+            deadline: deadlines[i].value.trim()
+        });
+    }
+    return { dateTime, address, inspector, generalComment, rows };
+}
 
-async function sendToSheet(payload) {
+// ---------- 7. ОТПРАВКА В GOOGLE APPS SCRIPT ----------
+const GOOGLE_SCRIPT_URL = 'ВАШ_URL_GOOGLE_APPS_SCRIPT';  // ЗАМЕНИТЕ ПОСЛЕ РАЗВЁРТЫВАНИЯ
+
+async function sendData(payload) {
     try {
         await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
@@ -78,49 +128,50 @@ function showNotification(msg, type) {
     setTimeout(() => n.classList.add('hidden'), 5000);
 }
 
+// ---------- 8. ОБРАБОТЧИК ОТПРАВКИ ----------
 document.getElementById('checklistForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const address = document.getElementById('buildingAddress').value;
-    const checkpoint = document.getElementById('checkpoint').value;
-    if (!address || !checkpoint) {
-        showNotification('Заполните обязательные поля: Адрес здания и Пункт проверки', 'error');
+    
+    if (!document.getElementById('buildingAddress').value) {
+        showNotification('Выберите адрес здания!', 'error');
         return;
     }
-    const inspector = document.getElementById('inspectorName').value.trim();
-    const comment = document.getElementById('comment').value.trim();
-    const normative = document.getElementById('normativeBase').value;
-    const now = new Date();
-    const dateTime = now.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-
-    const payload = {
-        dateTime, buildingAddress: address, checkpoint,
-        normativeBase: normative, inspectorName: inspector, comment,
-        отметка: "", подпись: ""   // пустые поля для печатного чек-листа
-    };
-
+    if (!isFormValid()) {
+        showNotification('Пожалуйста, выберите "Да" или "Нет" для каждого пункта проверки!', 'error');
+        return;
+    }
+    
+    const data = collectFormData();
+    
     const btn = document.getElementById('submitBtn');
     const front = btn.querySelector('.btn-front');
     const loader = btn.querySelector('.btn-loader');
     front.classList.add('hidden');
     loader.classList.remove('hidden');
     btn.disabled = true;
-
-    const ok = await sendToSheet(payload);
+    
+    const ok = await sendData(data);
     if (ok) {
-        showNotification('✅ Чек-лист отправлен! Данные добавлены в Google Таблицу.', 'success');
+        showNotification('✅ Чек-лист успешно отправлен! Данные добавлены в Google Таблицу.', 'success');
+        // Очистка формы (не сбрасываем адрес и таблицу? Сбросим только необязательные поля и таблицу)
         document.getElementById('inspectorName').value = '';
-        document.getElementById('comment').value = '';
-        // (адрес и пункт остаются, чтобы быстро заполнить следующий)
+        document.getElementById('generalComment').value = '';
+        // Сбросить все селекты и поля сроков
+        const selects = document.querySelectorAll('.status-select');
+        const deadlines = document.querySelectorAll('.deadline-input');
+        selects.forEach(sel => sel.value = '');
+        deadlines.forEach(inp => inp.value = '');
     } else {
         showNotification('❌ Ошибка отправки. Проверьте интернет и URL скрипта.', 'error');
     }
-
+    
     front.classList.remove('hidden');
     loader.classList.add('hidden');
     btn.disabled = false;
 });
 
+// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     populateAddresses();
-    populateCheckpoints();
+    buildTable();
 });
