@@ -24,19 +24,19 @@
                 </div>
             </div>
             <div class="checklist-badge">
-                <i class="fas fa-clipboard-check"></i>
-                <span>ЧЕК-ЛИСТ ГО И ЧС</span>
+                <i class="fas fa-clipboard-list"></i> 
+                <span>ЧЕК-ЛИСТ ГОТОВНОСТИ ПО ГО И ЧС</span>
             </div>
             <div class="subtitle">
-                Система сбора данных о готовности в области гражданской обороны и защиты от чрезвычайных ситуаций
+                Заполните таблицу по каждому пункту проверки. Отметка «Нет» требует указания срока устранения.
             </div>
         </div>
 
         <form id="checklistForm" class="modern-form">
-            <!-- Адрес здания (обязательный, строго из промта) -->
+            <!-- Адрес здания (обязательный) -->
             <div class="form-group">
                 <label for="buildingAddress" class="form-label">
-                    <i class="fas fa-location-dot"></i> Адрес здания <span class="required-star">*</span>
+                    <i class="fas fa-building"></i> Адрес здания <span class="required-star">*</span>
                 </label>
                 <div class="select-wrapper">
                     <select id="buildingAddress" name="buildingAddress" required>
@@ -44,47 +44,39 @@
                     </select>
                     <i class="fas fa-chevron-down select-arrow"></i>
                 </div>
-                <div class="field-hint">Обязательное поле. Укажите точный адрес объекта.</div>
             </div>
 
-            <!-- Пункт проверки (выпадающий список из Excel) -->
-            <div class="form-group">
-                <label for="checkpoint" class="form-label">
-                    <i class="fas fa-list-ul"></i> Пункт проверки <span class="required-star">*</span>
-                </label>
-                <div class="select-wrapper">
-                    <select id="checkpoint" name="checkpoint" required>
-                        <option value="" disabled selected>Выберите документ или мероприятие</option>
-                    </select>
-                    <i class="fas fa-chevron-down select-arrow"></i>
-                </div>
-                <div class="field-hint">Что именно проверяется (отсутствие документа / невыполненное мероприятие)</div>
-            </div>
-
-            <!-- Нормативное обоснование (заполняется автоматически) -->
-            <div class="form-group readonly-group">
-                <label for="normativeBase" class="form-label">
-                    <i class="fas fa-balance-scale"></i> Нормативное обоснование
-                </label>
-                <input type="text" id="normativeBase" readonly placeholder="Автоматически подставится из базы">
-                <div class="field-hint">Основание из законодательства РФ (заполняется автоматически)</div>
+            <!-- Таблица чек-листа -->
+            <div class="table-responsive">
+                <table class="checklist-table" id="checklistTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%">Пункт проверки</th>
+                            <th style="width: 30%">Нормативное обоснование</th>
+                            <th style="width: 15%">Выполнение <span class="required-star">*</span></th>
+                            <th style="width: 15%">Срок устранения</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- динамическое заполнение из JS -->
+                    </tbody>
+                </table>
             </div>
 
             <!-- ФИО проверяющего -->
             <div class="form-group">
                 <label for="inspectorName" class="form-label">
-                    <i class="fas fa-user-graduate"></i> ФИО проверяющего (ответственного)
+                    <i class="fas fa-user-check"></i> ФИО проверяющего (ответственного)
                 </label>
                 <input type="text" id="inspectorName" name="inspectorName" placeholder="Иванов Иван Иванович">
-                <div class="field-hint">Кто проводил проверку (необязательно)</div>
             </div>
 
-            <!-- Примечание -->
+            <!-- Общее примечание -->
             <div class="form-group">
-                <label for="comment" class="form-label">
-                    <i class="fas fa-pen-fancy"></i> Примечание / Особые отметки
+                <label for="generalComment" class="form-label">
+                    <i class="fas fa-pen-alt"></i> Общее примечание
                 </label>
-                <textarea id="comment" name="comment" rows="3" placeholder="Дополнительная информация, выявленные нюансы..."></textarea>
+                <textarea id="generalComment" name="generalComment" rows="2" placeholder="Дополнительная информация по всей проверке"></textarea>
             </div>
 
             <div class="form-actions">
