@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Чек-лист ГО и ЧС | Школа №2075</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%230B2F5E'/%3E%3Ctext x='50' y='70' font-size='50' text-anchor='middle' fill='%23D4AF37' font-weight='bold'%3E2075%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="container">
+        <div class="header-card">
+            <div class="logo-area">
+                <div class="school-emblem">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>2075</span>
+                </div>
+                <div class="title-area">
+                    <h1>ГБОУ Школа №2075</h1>
+                    <p>имени Героя Советского Союза Е.А. Родионова</p>
+                </div>
+            </div>
+            <div class="checklist-badge">
+                <i class="fas fa-clipboard-check"></i>
+                <span>ЧЕК-ЛИСТ ГО И ЧС</span>
+            </div>
+            <div class="subtitle">
+                Система сбора данных о готовности в области гражданской обороны и защиты от чрезвычайных ситуаций
+            </div>
+        </div>
+
+        <form id="checklistForm" class="modern-form">
+            <!-- Адрес здания (обязательный, строго из промта) -->
+            <div class="form-group">
+                <label for="buildingAddress" class="form-label">
+                    <i class="fas fa-location-dot"></i> Адрес здания <span class="required-star">*</span>
+                </label>
+                <div class="select-wrapper">
+                    <select id="buildingAddress" name="buildingAddress" required>
+                        <option value="" disabled selected>Выберите корпус или здание</option>
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+                <div class="field-hint">Обязательное поле. Укажите точный адрес объекта.</div>
+            </div>
+
+            <!-- Пункт проверки (выпадающий список из Excel) -->
+            <div class="form-group">
+                <label for="checkpoint" class="form-label">
+                    <i class="fas fa-list-ul"></i> Пункт проверки <span class="required-star">*</span>
+                </label>
+                <div class="select-wrapper">
+                    <select id="checkpoint" name="checkpoint" required>
+                        <option value="" disabled selected>Выберите документ или мероприятие</option>
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+                <div class="field-hint">Что именно проверяется (отсутствие документа / невыполненное мероприятие)</div>
+            </div>
+
+            <!-- Нормативное обоснование (заполняется автоматически) -->
+            <div class="form-group readonly-group">
+                <label for="normativeBase" class="form-label">
+                    <i class="fas fa-balance-scale"></i> Нормативное обоснование
+                </label>
+                <input type="text" id="normativeBase" readonly placeholder="Автоматически подставится из базы">
+                <div class="field-hint">Основание из законодательства РФ (заполняется автоматически)</div>
+            </div>
+
+            <!-- ФИО проверяющего -->
+            <div class="form-group">
+                <label for="inspectorName" class="form-label">
+                    <i class="fas fa-user-graduate"></i> ФИО проверяющего (ответственного)
+                </label>
+                <input type="text" id="inspectorName" name="inspectorName" placeholder="Иванов Иван Иванович">
+                <div class="field-hint">Кто проводил проверку (необязательно)</div>
+            </div>
+
+            <!-- Примечание -->
+            <div class="form-group">
+                <label for="comment" class="form-label">
+                    <i class="fas fa-pen-fancy"></i> Примечание / Особые отметки
+                </label>
+                <textarea id="comment" name="comment" rows="3" placeholder="Дополнительная информация, выявленные нюансы..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" id="submitBtn" class="glow-btn">
+                    <span class="btn-front"><i class="fas fa-paper-plane"></i> Отправить чек-лист</span>
+                    <span class="btn-loader hidden"><i class="fas fa-spinner fa-pulse"></i> Отправка...</span>
+                </button>
+            </div>
+        </form>
+
+        <div id="notification" class="toast-notification hidden"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
