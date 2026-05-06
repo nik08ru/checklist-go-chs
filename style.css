@@ -214,4 +214,45 @@ select:focus, input:focus, textarea:focus {
     body { padding: 1rem; }
     .checklist-table th, .checklist-table td { padding: 8px 4px; }
     .checklist-table td select, .checklist-table td input { font-size: 0.75rem; }
+/* Логотип "МОСКОВСКОЕ ОБРАЗОВАНИЕ" */
+.mos-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #0B2F5E, #1E4A76);
+    padding: 8px 18px;
+    border-radius: 60px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-right: 15px;
 }
+.mos-logo i {
+    font-size: 2rem;
+    color: var(--school-gold);
+}
+.mos-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+.mos-text span:first-child {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #D4AF37;
+    letter-spacing: 0.5px;
+}
+.mos-text span:last-child {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: 1px;
+}
+@media (max-width: 700px) {
+    .logo-area {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .mos-logo {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}}
