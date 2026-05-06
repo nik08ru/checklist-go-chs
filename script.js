@@ -1,5 +1,6 @@
-// ==================== 1. АДРЕСА ЗДАНИЙ (11 адресов из вашего скриншота) ====================
+// ==================== 1. АДРЕСА ЗДАНИЙ (с опцией "Все здания") ====================
 const buildingAddresses = [
+    "Все здания (юридическое лицо)",
     "город Москва, район Краснопахорский, поселок Шишкин Лес, дом 33",
     "город Москва, район Краснопахорский, поселок Щапово, дом 21, строение 2",
     "город Москва, район Краснопахорский, село Красная Пахра, дом 24А",
@@ -13,7 +14,7 @@ const buildingAddresses = [
     "город Москва, район Краснопахорский, поселок Щапово, дом 20, строение 1"
 ];
 
-// ==================== 2. ПУНКТЫ ПРОВЕРКИ (перефразированы в позитивные формулировки) ====================
+// ==================== 2. ПУНКТЫ ПРОВЕРКИ (позитивные формулировки) ====================
 const checklistItems = [
     { name: "Наличие приказа «Об организации и ведении гражданской обороны в образовательных организациях»", normative: "постановление Правительства РФ от 26.11.2007 № 804" },
     { name: "Наличие приказа о назначении уполномоченного на решение задач в области ГО в ОО", normative: "Постановление Правительства РФ от 10.07.1999 № 782" },
@@ -120,7 +121,7 @@ async function sendData(payload) {
     try {
         await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',   // упрощённый режим для Google Apps Script
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
@@ -145,14 +146,12 @@ function showNotification(msg, type) {
 document.getElementById('checklistForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Проверка выбора адреса
     const addressSelect = document.getElementById('buildingAddress');
     if (!addressSelect.value) {
-        showNotification('Выберите адрес здания!', 'error');
+        showNotification('Выберите адрес здания или "Все здания"!', 'error');
         return;
     }
     
-    // Проверка, что по каждому пункту выбран ответ
     if (!isFormValid()) {
         showNotification('Пожалуйста, выберите "Да" или "Нет" для каждого пункта проверки!', 'error');
         return;
@@ -173,7 +172,6 @@ document.getElementById('checklistForm')?.addEventListener('submit', async (e) =
     
     if (ok) {
         showNotification('✅ Чек-лист успешно отправлен! Данные добавлены в Google Таблицу.', 'success');
-        // Очищаем необязательные поля и сбрасываем таблицу
         document.getElementById('inspectorName').value = '';
         document.getElementById('generalComment').value = '';
         const selects = document.querySelectorAll('.status-select');
@@ -191,7 +189,7 @@ document.getElementById('checklistForm')?.addEventListener('submit', async (e) =
     if (btn) btn.disabled = false;
 });
 
-// ==================== 10. ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ====================
+// ==================== 10. ИНИЦИАЛИЗАЦИЯ ====================
 document.addEventListener('DOMContentLoaded', () => {
     populateAddresses();
     buildTable();
