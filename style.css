@@ -8,12 +8,11 @@
     --school-blue: #0B2F5E;
     --school-gold: #D4AF37;
     --school-burgundy: #8B1E1E;
-    --light-bg: #F4F7FC;
     --white: #FFFFFF;
+    --gray-100: #F8FAFE;
     --gray-300: #E2E8F0;
     --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    --transition: all 0.25s ease;
+    --transition: all 0.2s ease;
 }
 
 body {
@@ -37,23 +36,22 @@ body {
 }
 
 .container {
-    max-width: 880px;
+    max-width: 1280px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
 }
 
+/* Шапка */
 .header-card {
     background: var(--white);
     border-radius: 32px;
-    padding: 2rem 2rem 1.2rem;
+    padding: 1.8rem 2rem;
     margin-bottom: 2rem;
     box-shadow: var(--shadow-xl);
-    border: 1px solid rgba(212, 175, 55, 0.2);
     position: relative;
     overflow: hidden;
 }
-
 .header-card::after {
     content: '';
     position: absolute;
@@ -63,7 +61,6 @@ body {
     height: 6px;
     background: linear-gradient(90deg, var(--school-blue), var(--school-gold), var(--school-burgundy));
 }
-
 .logo-area {
     display: flex;
     align-items: center;
@@ -71,11 +68,10 @@ body {
     flex-wrap: wrap;
     margin-bottom: 1rem;
 }
-
 .school-emblem {
     background: linear-gradient(135deg, var(--school-blue), #1E4A76);
-    width: 80px;
-    height: 80px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -83,36 +79,10 @@ body {
     justify-content: center;
     box-shadow: 0 12px 20px -8px rgba(11, 47, 94, 0.4);
 }
-
-.school-emblem i {
-    font-size: 2.5rem;
-    color: var(--school-gold);
-}
-
-.school-emblem span {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: 1.2rem;
-    color: var(--school-gold);
-    margin-top: -5px;
-}
-
-.title-area h1 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.9rem;
-    font-weight: 800;
-    background: linear-gradient(120deg, var(--school-blue), #2c5282);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-.title-area p {
-    font-size: 0.9rem;
-    color: #4A5568;
-    font-weight: 500;
-}
-
+.school-emblem i { font-size: 2.2rem; color: var(--school-gold); }
+.school-emblem span { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--school-gold); margin-top: -4px; }
+.title-area h1 { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 800; background: linear-gradient(120deg, var(--school-blue), #2c5282); background-clip: text; -webkit-background-clip: text; color: transparent; }
+.title-area p { font-size: 0.9rem; color: #4A5568; }
 .checklist-badge {
     display: inline-flex;
     align-items: center;
@@ -124,41 +94,16 @@ body {
     font-weight: 700;
     color: var(--school-blue);
 }
+.subtitle { font-size: 0.9rem; color: #4B6584; border-left: 4px solid var(--school-gold); padding-left: 14px; }
 
-.checklist-badge i {
-    color: var(--school-gold);
-}
-
-.subtitle {
-    font-size: 0.9rem;
-    color: #4B6584;
-    border-left: 4px solid var(--school-gold);
-    padding-left: 14px;
-}
-
+/* Форма */
 .modern-form {
     background: var(--white);
     border-radius: 32px;
     padding: 2rem;
     box-shadow: var(--shadow-xl);
 }
-
-.form-group {
-    margin-bottom: 1.8rem;
-    animation: fadeUp 0.4s ease backwards;
-}
-.form-group:nth-child(1) { animation-delay: 0s; }
-.form-group:nth-child(2) { animation-delay: 0.05s; }
-.form-group:nth-child(3) { animation-delay: 0.1s; }
-.form-group:nth-child(4) { animation-delay: 0.15s; }
-.form-group:nth-child(5) { animation-delay: 0.2s; }
-.form-actions { animation: fadeUp 0.5s ease backwards; animation-delay: 0.25s; }
-
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+.form-group { margin-bottom: 1.8rem; }
 .form-label {
     display: flex;
     align-items: center;
@@ -167,33 +112,23 @@ body {
     margin-bottom: 10px;
     font-size: 0.95rem;
     color: var(--school-blue);
-    font-family: 'Montserrat', sans-serif;
 }
-
-.form-label i {
-    color: var(--school-gold);
-}
-
-.required-star {
-    color: #E53E3E;
-}
-
-.select-wrapper {
-    position: relative;
-}
-
-.select-wrapper select {
-    appearance: none;
+.required-star { color: #E53E3E; margin-left: 4px; }
+.select-wrapper { position: relative; }
+select, input, textarea {
     width: 100%;
     padding: 0.85rem 1rem;
     border: 2px solid var(--gray-300);
     border-radius: 20px;
-    background: var(--white);
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
-    cursor: pointer;
+    transition: var(--transition);
 }
-
+select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--school-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+}
 .select-arrow {
     position: absolute;
     right: 16px;
@@ -203,34 +138,44 @@ body {
     color: var(--school-blue);
 }
 
-input, textarea, select {
-    transition: var(--transition);
+/* Таблица */
+.table-responsive {
+    overflow-x: auto;
+    margin: 1.5rem 0 2rem;
+    border-radius: 24px;
+    border: 1px solid var(--gray-300);
+}
+.checklist-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.checklist-table th, .checklist-table td {
+    border: 1px solid var(--gray-300);
+    padding: 12px 8px;
+    vertical-align: top;
+    text-align: left;
+}
+.checklist-table th {
+    background: var(--school-blue);
+    color: white;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    position: sticky;
+    top: 0;
+}
+.checklist-table td select, .checklist-table td input {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+.checklist-table td:first-child, .checklist-table td:nth-child(2) {
+    font-size: 0.85rem;
+    line-height: 1.4;
 }
 
-input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: var(--school-gold);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
-}
-
-.readonly-group input {
-    background: #F8FAFE;
-    border-color: #E2E8F0;
-    color: #4A5568;
-    cursor: default;
-    font-style: italic;
-}
-
-.field-hint {
-    font-size: 0.75rem;
-    color: #718096;
-    margin-top: 8px;
-}
-.field-hint::before {
-    content: "📌";
-    margin-right: 6px;
-}
-
+/* Кнопка */
 .glow-btn {
     width: 100%;
     background: linear-gradient(105deg, var(--school-blue) 0%, #1F4E7A 100%);
@@ -248,46 +193,25 @@ input:focus, textarea:focus, select:focus {
     gap: 12px;
     box-shadow: 0 8px 20px rgba(11, 47, 94, 0.4);
 }
+.glow-btn:hover { transform: translateY(-2px); box-shadow: 0 20px 30px -10px rgba(11, 47, 94, 0.5); }
+.btn-loader.hidden { display: none; }
 
-.glow-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 20px 30px -10px rgba(11, 47, 94, 0.5);
-}
-
-.btn-loader.hidden {
-    display: none;
-}
-
+/* Уведомления */
 .toast-notification {
     margin-top: 1.5rem;
     padding: 1rem 1.5rem;
     border-radius: 60px;
     background: var(--white);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-xl);
     font-weight: 500;
     border-left: 6px solid;
 }
+.toast-notification.success { border-left-color: #10b981; background: #F0FDF4; color: #065f46; }
+.toast-notification.error { border-left-color: #EF4444; background: #FEF2F2; color: #991B1B; }
+.toast-notification.hidden { display: none; }
 
-.toast-notification.success {
-    border-left-color: #10b981;
-    background: #F0FDF4;
-    color: #065f46;
-}
-
-.toast-notification.error {
-    border-left-color: #EF4444;
-    background: #FEF2F2;
-    color: #991B1B;
-}
-
-.toast-notification.hidden {
-    display: none;
-}
-
-@media (max-width: 640px) {
+@media (max-width: 800px) {
     body { padding: 1rem; }
-    .header-card, .modern-form { padding: 1.5rem; }
-    .logo-area { flex-direction: column; text-align: center; }
-    .title-area h1 { font-size: 1.5rem; }
-    .school-emblem { width: 65px; height: 65px; }
+    .checklist-table th, .checklist-table td { padding: 8px 4px; }
+    .checklist-table td select, .checklist-table td input { font-size: 0.75rem; }
 }
