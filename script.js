@@ -1,6 +1,6 @@
 // ============================================================================
 // ЧЕК-ЛИСТ ГО И ЧС — Школа №2075 имени Е.А. Родионова
-// Отправка в Google Apps Script → создание Google Docs
+// С поддержкой ссылок на документы
 // ============================================================================
 
 // ----------------------------- 1. АДРЕСА ЗДАНИЙ -----------------------------
@@ -36,7 +36,7 @@ const checklistItems = [
     { name: "Наличие Актов подключения и рабочей документации по сопряжению объектовой системы оповещения о ЧС с региональной системой оповещения населения г. Москвы", normative: "постановление Правительства Москвы от 01.12.2015 № 795-ПП" }
 ];
 
-// ----------------------------- 3. ЗАПОЛНЕНИЕ ВЫПАДАЮЩЕГО СПИСКА АДРЕСОВ -----------------------------
+// ----------------------------- 3. ЗАПОЛНЕНИЕ АДРЕСОВ -----------------------------
 function populateAddresses() {
     const select = document.getElementById('buildingAddress');
     if (!select) return;
@@ -49,19 +49,22 @@ function populateAddresses() {
     });
 }
 
-// ----------------------------- 4. ПОСТРОЕНИЕ ТАБЛИЦЫ С ПУНКТАМИ -----------------------------
+// ----------------------------- 4. ПОСТРОЕНИЕ ТАБЛИЦЫ С ПУНКТАМИ + ССЫЛКИ -----------------------------
 function buildTable() {
     const tbody = document.getElementById('tableBody');
     if (!tbody) return;
     tbody.innerHTML = '';
     checklistItems.forEach((item, idx) => {
         const row = tbody.insertRow();
+        // Пункт проверки
         const cellName = row.insertCell(0);
         cellName.textContent = item.name;
+        // Нормативное обоснование
         const cellNorm = row.insertCell(1);
         cellNorm.textContent = item.normative;
         cellNorm.style.fontSize = '0.8rem';
         cellNorm.style.color = '#4A5568';
+        // Выполнение (Да/Нет)
         const cellStatus = row.insertCell(2);
         const select = document.createElement('select');
         select.required = true;
@@ -70,12 +73,20 @@ function buildTable() {
                             <option value="Нет">❌ Нет</option>`;
         select.className = 'status-select';
         cellStatus.appendChild(select);
+        // Срок устранения
         const cellDeadline = row.insertCell(3);
         const inputDeadline = document.createElement('input');
         inputDeadline.type = 'text';
         inputDeadline.placeholder = 'укажите срок (при "Нет")';
         inputDeadline.className = 'deadline-input';
         cellDeadline.appendChild(inputDeadline);
+        // Ссылка на документ (новый столбец)
+        const cellLink = row.insertCell(4);
+        const inputLink = document.createElement('input');
+        inputLink.type = 'url';
+        inputLink.placeholder = 'https://... (ссылка на документ)';
+        inputLink.className = 'link-input';
+        cellLink.appendChild(inputLink);
     });
 }
 
@@ -88,7 +99,7 @@ function isFormValid() {
     return true;
 }
 
-// ----------------------------- 6. СБОР ДАННЫХ -----------------------------
+// ----------------------------- 6. СБОР ДАННЫХ (включая ссылки) -----------------------------
 function collectFormData() {
     const address = document.getElementById('buildingAddress').value;
     const inspector = document.getElementById('inspectorName').value.trim();
@@ -100,18 +111,20 @@ function collectFormData() {
     const rows = [];
     const selects = document.querySelectorAll('.status-select');
     const deadlines = document.querySelectorAll('.deadline-input');
+    const links = document.querySelectorAll('.link-input');
     for (let i = 0; i < checklistItems.length; i++) {
         rows.push({
             question: checklistItems[i].name,
             status: selects[i].value,
-            deadline: deadlines[i].value.trim()
+            deadline: deadlines[i].value.trim(),
+            link: links[i].value.trim()   // сохраняем ссылку
         });
     }
     return { dateTime, address, inspector, generalComment, rows };
 }
 
-// ----------------------------- 7. ОТПРАВКА В APPS SCRIPT (без no-cors) -----------------------------
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWLjexeriEqytDg0xyDex2RrKIBkXIdOXUZ6hRtdL9ONa0VrrTm-bQtrnsny77zO66tw/exec'; // ЗАМЕНИТЕ НА ВАШ URL
+// ----------------------------- 7. ОТПРАВКА В APPS SCRIPT -----------------------------
+const GOOGLE_SCRIPT_URL = 'ВАШ_URL_GOOGLE_APPS_SCRIPT'; // Замените на ваш URL
 
 async function sendData(payload) {
     try {
@@ -146,7 +159,7 @@ function showNotification(msg, type, url = null) {
     setTimeout(() => n.classList.add('hidden'), 8000);
 }
 
-// ----------------------------- 9. ОБРАБОТЧИК ФОРМЫ -----------------------------
+// ----------------------------- 9. ОБРАБОТЧИК ОТПРАВКИ -----------------------------
 document.getElementById('checklistForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -177,6 +190,7 @@ document.getElementById('checklistForm')?.addEventListener('submit', async (e) =
         document.getElementById('generalComment').value = '';
         document.querySelectorAll('.status-select').forEach(sel => sel.value = '');
         document.querySelectorAll('.deadline-input').forEach(inp => inp.value = '');
+        document.querySelectorAll('.link-input').forEach(inp => inp.value = '');
     } else {
         showNotification(`❌ Ошибка: ${result.error}`, 'error');
     }
