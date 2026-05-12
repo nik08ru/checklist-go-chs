@@ -22,7 +22,7 @@
                         <span>ОБРАЗОВАНИЕ</span>
                     </div>
                 </div>
-                <!-- Герб/эмблема школы -->
+                <!-- Эмблема школы -->
                 <div class="school-emblem">
                     <i class="fas fa-shield-alt"></i>
                     <span>2075</span>
@@ -36,7 +36,7 @@
                 <span>ЧЕК-ЛИСТ ГОТОВНОСТИ ПО ГО И ЧС</span>
             </div>
             <div class="subtitle">
-                Заполните таблицу по каждому пункту проверки. Отметка «Нет» требует указания срока устранения.
+                Заполните таблицу по каждому пункту проверки. Отметка «Нет» требует указания срока устранения. При наличии подтверждающего документа вставьте ссылку (Google Диск, Яндекс.Диск, облако).
             </div>
         </div>
 
@@ -54,19 +54,20 @@
                 </div>
             </div>
 
-            <!-- Таблица чек-листа -->
+            <!-- Таблица чек-листа с 5 столбцами (добавлена ссылка) -->
             <div class="table-responsive">
                 <table class="checklist-table" id="checklistTable">
                     <thead>
                         <tr>
-                            <th style="width: 40%">Пункт проверки</th>
-                            <th style="width: 30%">Нормативное обоснование</th>
-                            <th style="width: 15%">Выполнение <span class="required-star">*</span></th>
+                            <th style="width: 35%">Пункт проверки</th>
+                            <th style="width: 25%">Нормативное обоснование</th>
+                            <th style="width: 10%">Выполнение <span class="required-star">*</span></th>
                             <th style="width: 15%">Срок устранения</th>
+                            <th style="width: 15%">Ссылка на документ</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!-- динамическое заполнение из JS -->
+                        <!-- Динамическое заполнение из JavaScript -->
                     </tbody>
                 </table>
             </div>
